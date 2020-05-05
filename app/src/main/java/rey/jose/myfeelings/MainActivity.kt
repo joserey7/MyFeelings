@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             var json : String = jsonFile?.getData(this) ?: ""
             if (json != ""){
                 this.data = true
-                var jsonArray: JSONArray = JSONArray(json)
+                var jsonArray = JSONArray(json)
                 this.lista = parseJSON(jsonArray)
 
                 for (i in lista){
@@ -113,24 +113,25 @@ class MainActivity : AppCompatActivity() {
         if (sad>veryHappy &&  sad>neutral && sad>happy && sad>verySad){
             icon.setImageDrawable(resources.getDrawable(R.drawable.ic_sentiment_dissatisfied_black_24dp))
         }
-        if (happy>veryHappy &&  happy>neutral && happy>sad && happy>verySad){
+        if (verySad>veryHappy &&  verySad>neutral && verySad>sad && verySad>happy){
             icon.setImageDrawable(resources.getDrawable(R.drawable.ic_sentiment_very_dissatisfied_black_24dp))
         }
     }
 
     fun actualizarGrafica(){
         val total = veryHappy + happy + neutral + verySad + sad
+
         var pVH: Float = (veryHappy * 100 / total).toFloat()
         var pH: Float = (happy * 100 / total).toFloat()
         var pN: Float = (neutral * 100 / total).toFloat()
         var pS: Float = (sad * 100 / total).toFloat()
-        var pVS: Float = (veryHappy * 100 / total).toFloat()
+        var pVS: Float = (verySad * 100 / total).toFloat()
 
-        Log.d("porcenatajes", "Very Happy " + pVH)
-        Log.d("porcenatajes", "Happy " + pH)
-        Log.d("porcenatajes", "Neutral " + pN)
-        Log.d("porcenatajes", "Sad " + pS)
-        Log.d("porcenatajes", "Very Sad " + pVS)
+        Log.d("porcenatajes", "Muy Feliz" + pVH)
+        Log.d("porcenatajes", "Feliz" + pH)
+        Log.d("porcenatajes", "Neutral" + pN)
+        Log.d("porcenatajes", "Triste" + pS)
+        Log.d("porcenatajes", "Muy Triste" + pVS)
 
         lista.clear()
         lista.add(Emociones("Muy Feliz", pVH, R.color.mustard, veryHappy))
@@ -156,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         for (i in 0..jsonArray.length()){
             try {
                 val nombre = jsonArray.getJSONObject(i).getString("nombre")
-                val porcentaje = jsonArray.getJSONObject(i).getDouble("porcenajte").toFloat()
+                val porcentaje = jsonArray.getJSONObject(i).getDouble("porcentaje").toFloat()
                 val color = jsonArray.getJSONObject(i).getInt("color")
                 val total = jsonArray.getJSONObject(i).getDouble("total").toFloat()
                 val emocion = Emociones(nombre, porcentaje, color, total)
@@ -169,21 +170,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun guardar(){
-        var jsonArray = JSONArray()
-        var o : Int = 0
-        for (i in lista){
+        var json = JSONArray()
+        var o: Int = 0
+        for(i in lista){
             Log.d("objetos", i.toString())
-            var j: JSONObject = JSONObject()
+            var j = JSONObject()
             j.put("nombre", i.nombre)
             j.put("porcentaje", i.porcentaje)
             j.put("color", i.color)
             j.put("total", i.total)
 
-            jsonArray.put(o,j)
-            o++
+            json.put(o, j)
+            o++;
         }
-        jsonFile?.saveData(this, jsonArray.toString())
 
+        jsonFile?.saveData(this, json.toString())
         Toast.makeText(this,"Datos guardados", Toast.LENGTH_SHORT).show()
+
     }
 }

@@ -32,7 +32,7 @@ class CustomBarDrawable: Drawable{
         if (this.emocion != null){
             val porcentaje: Float = this.emocion!!.porcentaje * (p0.width-10)/100
             var coordenadas2 = RectF(0.0F, 0.0F, ancho, alto)
-            var seccion: Paint = Paint()
+            var seccion = Paint()
 
             seccion.style = Paint.Style.FILL
             seccion.isAntiAlias = true
