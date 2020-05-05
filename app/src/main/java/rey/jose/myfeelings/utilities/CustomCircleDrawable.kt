@@ -3,6 +3,7 @@ package rey.jose.myfeelings.utilities
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
 import rey.jose.myfeelings.R
 
 class CustomCircleDrawable: Drawable {
@@ -16,12 +17,13 @@ class CustomCircleDrawable: Drawable {
 
     constructor(context: Context, emociones: ArrayList<Emociones>){
         this.context = context
+        this.emociones = emociones
         grosorMetrica = context.resources.getDimensionPixelSize(R.dimen.graphWith)
         grosorFondo = context.resources.getDimensionPixelSize(R.dimen.graphBackground)
     }
 
     override fun draw(p0: Canvas) {
-        val fondo: Paint = Paint()
+        val fondo = Paint()
         fondo.style = Paint.Style.STROKE
         fondo.strokeWidth = (this.grosorFondo).toFloat()
         fondo.isAntiAlias = true
@@ -29,12 +31,26 @@ class CustomCircleDrawable: Drawable {
         fondo.color = context?.resources?.getColor(R.color.gray) ?: R.color.gray
         val ancho: Float = (p0.width - 25).toFloat()
         val alto: Float = (p0.height - 25).toFloat()
-
         coordenadas = RectF(25.0F, 25.0F, ancho, alto)
-
         p0.drawArc(coordenadas!!, 0.0F, 360.0F, false, fondo)
 
-        this.anguloInicio += this.anguloBarrido
+        if(emociones.size != 0) {
+            for(e in emociones){
+                val grado: Float = (e.porcentaje*360)/100.0f;
+                this.anguloBarrido = grado;
+                val fondo2 = Paint();
+                fondo2.style = Paint.Style.STROKE;
+                fondo2.strokeWidth = (this.grosorFondo).toFloat();
+                fondo2.isAntiAlias = true;
+                fondo2.strokeCap = Paint.Cap.ROUND;
+                fondo2.color = ContextCompat.getColor(this.context!!, e.color)
+                val ancho: Float = (p0.width - 25).toFloat();
+                val alto: Float = (p0.height - 25).toFloat();
+                coordenadas = RectF(25.0f, 25.0f, ancho, alto);
+                p0.drawArc(coordenadas!!, this.anguloInicio, this.anguloBarrido, false, fondo2);
+                this.anguloInicio += this.anguloBarrido;
+            }
+        }
     }
 
     override fun setAlpha(alpha: Int) {
